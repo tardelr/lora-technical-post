@@ -1,6 +1,3 @@
-import os
-from pathlib import Path
-
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import LoraConfig
@@ -10,7 +7,6 @@ from trl import SFTConfig, SFTTrainer
 
 OUTPUT_DIR = "./cup_adapter"
 
-# Random tokeziner to start train, tested with Llama and Qwen
 tokenizer = AutoTokenizer.from_pretrained(
     'Qwen/Qwen3-0.6B',
     use_fast=False,
