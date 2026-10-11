@@ -18,7 +18,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelForCausalLM.from_pretrained(
     "Qwen/Qwen3-0.6B",
-    dtype=torch.bfloat16, ## Forcing fp16, to show prepare_for_k_bit upcast
+    dtype=torch.bfloat16,
     device_map="auto",
     attn_implementation="sdpa",
     trust_remote_code=False,
@@ -26,23 +26,6 @@ model = AutoModelForCausalLM.from_pretrained(
 data_files = "tardelr/worldcup2026"
 dataset = load_dataset(data_files, split="train")
 
-# def format_example(example):
-#     input_section = ""
-#     text = (
-#         "Below is an instruction that describes a task. "
-#         "Write a response that appropriately completes the request."
-#         f"\n\n### Instruction:\n{example['instruction']}"
-#         f"{input_section}"
-#         f"\n\n### Response:\n{example['output']}"
-#     )
-#     return {"text": text}
-
-
-# dataset = dataset.map(
-#     format_example,
-#     remove_columns=dataset.column_names,
-#     desc="Formatting dataset",
-# )
 
 lora_config = LoraConfig(r=64,
   lora_alpha=128,

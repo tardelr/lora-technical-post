@@ -18,7 +18,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelForCausalLM.from_pretrained(
     "Qwen/Qwen3-0.6B",
-    dtype=torch.bfloat16, ## Forcing fp16, to show prepare_for_k_bit upcast
+    dtype=torch.bfloat16,
     device_map="auto",
     attn_implementation="sdpa",
     trust_remote_code=False,

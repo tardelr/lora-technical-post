@@ -11,7 +11,6 @@ from trl import SFTConfig, SFTTrainer
 
 OUTPUT_DIR = "./json_adapter"
 
-# Random tokeziner to start train, tested with Llama and Qwen
 tokenizer = AutoTokenizer.from_pretrained(
     'Qwen/Qwen3-0.6B',
     use_fast=False,
@@ -19,7 +18,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 
 model = AutoModelForCausalLM.from_pretrained(
     "Qwen/Qwen3-0.6B",
-    dtype=torch.bfloat16, ## Forcing fp16, to show prepare_for_k_bit upcast
+    dtype=torch.bfloat16,
     device_map="auto",
     attn_implementation="sdpa",
     trust_remote_code=False,
@@ -28,15 +27,7 @@ model = AutoModelForCausalLM.from_pretrained(
 # this dataset is basically commonsense with additional explanation fields
 dataset = load_dataset("Salesforce/cos_e", "v1.11", split="train")
 
-# eos_token = tokenizer.eos_token_id
-# pad_token=tokenizer.pad_token_id
-
 LETTERS = "ABCDE"
-
-# INSTRUCTION = (
-#     "Answer the multiple-choice question. Respond ONLY with a valid JSON object "
-#     'in the format {"answer": "<letter>", "explanation": "<answer text>"}.'
-# )
 def format_example(example):
     texts = example["choices"]
     labels = LETTERS[: len(texts)]
@@ -87,13 +78,5 @@ trainer_kwargs = {
     }
 
 trainer = SFTTrainer(**trainer_kwargs)
-
-ex = trainer.train_dataset[0]
-print(repr(tokenizer.decode(ex["input_ids"][-3:])))
-# print(ex["completion_mask"][-3:])
-
-# eos_id = tokenizer.eos_token_id
-# assert all(r["input_ids"][-1] == eos_id for r in trainer.train_dataset)
-
 trainer.train(resume_from_checkpoint=False)
 trainer.save_model(OUTPUT_DIR)
